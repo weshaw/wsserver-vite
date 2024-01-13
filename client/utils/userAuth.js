@@ -12,6 +12,7 @@ const authDetailsInitialState = () => ({
 })
 
 function AuthUser() {
+  let initialized = false;
   const authChanges = new AppEvent();
   let authDetails = authDetailsInitialState()
 
@@ -29,6 +30,10 @@ function AuthUser() {
 
   const updatAuthDetails = async () => {
     const token = sessionStorage.getItem('googleIdToken') || null;
+    if(!token) {
+      signOut();
+      return;
+    }
     authDetails.token = token;
     authDetails.user = jwtDecode(token);
     authChanges.notify(authDetails);
@@ -39,6 +44,7 @@ function AuthUser() {
     google.accounts.id.disableAutoSelect();
     authDetails = authDetailsInitialState();
     authChanges.notify(authDetails);
+    google.accounts.id.prompt();
   };
 
   const isSignedIn = () => {
@@ -48,15 +54,29 @@ function AuthUser() {
     return authDetails.token;
   }
   const getUser = () => {
-    return authDetails.user || {
+    return authDetails?.user || {
       name: "Guest",
     };
   }
 
+  const initLogin = () => {
+    if(initialized) {
+      return;
+    }
+    initialized = true;
+    google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: authUser.credentialResponse
+    });
+    if(!isSignedIn()) {
+      google.accounts.id.prompt();
+    }
+  }
   // Initialize auth details
   updatAuthDetails();
 
   return {
+    initLogin,
     credentialResponse,
     isSignedIn,
     getToken,
@@ -66,42 +86,12 @@ function AuthUser() {
   }
 }
 
+
+
 const authUser = new AuthUser();
 
-window.onload = function () {
-  google.accounts.id.initialize({
-    client_id: googleClientId,
-    callback: authUser.credentialResponse
-  });
-  if(!authUser.isSignedIn()) {
-    google.accounts.id.prompt();
-  }
-  console.log(google.accounts)
-};
-
-function signinButtonHTML() {
-  if (authUser.isSignedIn()) {
-    return `
-    <div>
-      <div>
-        <span>Welcome, ${authUser.getUser().name}</span>
-        <button id="signOut">Sign Out</button>
-      </div>
-    </div>
-    `
-  }
-  return `
-  <div id="g_id_onload"
-    data-client_id="${googleClientId}"
-    data-context="use"
-    data-ux_mode="popup"
-    data-login_uri="/"
-    data-auto_prompt="false">
-  </div>
-  `
-}
 
 export {
-  signinButtonHTML,
   authUser,
+  googleClientId
 }
