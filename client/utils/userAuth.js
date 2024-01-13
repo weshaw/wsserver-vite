@@ -86,10 +86,7 @@ function AuthUser() {
   }
 }
 
-
-
 const authUser = new AuthUser();
-
 
 export {
   authUser,

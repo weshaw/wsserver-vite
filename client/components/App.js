@@ -1,5 +1,6 @@
+// path/filename: /client/components/App.js
+
 import { Component } from '../core';
-import { authUser } from '../utils/userAuth.js';
 import Login from './Login.js';
 
 const App = new Component({
@@ -9,10 +10,10 @@ const App = new Component({
 App.template = () => {
   return `
     <div>
-      <div class="card">
-      </div>
+        <div class="card">
+        </div>
+        <Component name="Login" />
     </div>
-    <slot component="Login" />
   `
 }
 

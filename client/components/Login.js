@@ -1,3 +1,5 @@
+// path/filename: /client/components/Login.js
+
 import { Component } from '../core';
 import { authUser, googleClientId } from '../utils/userAuth.js';
 
@@ -35,10 +37,8 @@ Login.template = ({ user, signedIn, googleClientId }) => {
   if (signedIn) {
     return `
     <div>
-      <div>
-        <span>Welcome, ${user.name}</span>
-        <button id="signOut">Sign Out</button>
-      </div>
+      <span>Welcome, ${user.name}</span>
+      <button id="signOut">Sign Out</button>
     </div>
     `
   }

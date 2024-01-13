@@ -1,16 +1,25 @@
 // path/filename: /client/utils/wsClient.js
 
 import {
-    getToken,
-    authChanges
+    authUser
 } from './userAuth';
 
+
 export default function wsClient() {
-    let googleIdToken = getToken();
     const ws = new WebSocket('ws://localhost:8080');
+
     ws.onopen = function () {
-        authChanges.subscribe(authDetails => {
-            setToken(authDetails.token)
+        const token = authUser.getToken();
+        if (token) {
+            sendAuthenticated(token);
+        }
+
+        authUser.authChanges.subscribe(authDetails => {
+            if (authDetails.token) {
+                sendAuthenticated(authDetails.token);
+            } else {
+                sendLogout();
+            }
         });
         console.log('WebSocket Client Connected');
     };
@@ -26,17 +35,19 @@ export default function wsClient() {
         console.log('WebSocket Client Disconnected:', e.reason);
     };
 
-    const setToken = (token) => {
-        googleIdToken = token;
-        ws.send(JSON.stringify({ token: googleIdToken }));
+    const sendMessage = (type, data = {}) => {
+        ws.send(JSON.stringify({ type, data }));
     }
-
-    const sendMessage = (message) => {
-        ws.send(message);
+    function sendAuthenticated(token) {
+        sendMessage('authentication', { token });
+    }
+    function sendLogout() {
+        sendMessage('logout');
     }
 
     return {
         setToken,
         sendMessage,
+        sendLogout,
     };
 }
