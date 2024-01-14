@@ -1,10 +1,11 @@
 // path/filename: /client/utils/userAuth.js
 
 import { jwtDecode } from "jwt-decode";
-import env from "./env";
+import env from "../env";
 import AppEvent from "../../shared/event";
 
 const { googleClientId } = env
+const google = window.google;
 
 const authDetailsInitialState = () => ({
   user: null,

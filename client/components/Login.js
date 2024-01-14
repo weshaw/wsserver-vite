@@ -5,39 +5,37 @@ import { authUser, googleClientId } from '../utils/userAuth.js';
 
 const Login = new Component();
 
+const updateLoginState = () => {
+  Login.setState({
+    user: authUser.getUser(),
+    signedIn: authUser.isSignedIn(),
+    googleClientId,
+  })
+}
+
 Login.onMount = () => {
   authUser.initLogin();
 }
 
-Login.onRender = (content, {signedIn}) => {
-  if(signedIn) {
-    console.log("Login rendered", content);
+Login.onRender = (content, { signedIn }) => {
+  if (signedIn) {
     const logoutButton = content.querySelector('#signOut');
-    logoutButton.addEventListener('click', (e) => {
+    logoutButton.addEventListener('click', () => {
       authUser.signOut()
     });
   }
 }
 
-Login.setState({
-  user: authUser.getUser(),
-  signedIn: authUser.isSignedIn(),
-  googleClientId,
-})
-
-authUser.authChanges.subscribe(authDetails => {
-  console.log("authDetails", authDetails);
-  Login.setState({
-    user: authUser.getUser(),
-    signedIn: authUser.isSignedIn(),
-    })
-})
+updateLoginState();
+authUser.authChanges.subscribe(() => {
+  updateLoginState();
+});
 
 Login.template = ({ user, signedIn, googleClientId }) => {
   if (signedIn) {
     return `
-    <div>
-      <span>Welcome, ${user.name}</span>
+    <div class="user-card">
+      <div class="user-greeting">${user?.picture && `<img src="${user.picture}" />`} ${user.given_name}</div>
       <button id="signOut">Sign Out</button>
     </div>
     `

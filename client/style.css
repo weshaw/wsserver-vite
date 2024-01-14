@@ -35,34 +35,6 @@ h1 {
   line-height: 1.1;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -81,6 +53,61 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.card {
+  padding: 2em;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  padding: 1em;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  position: fixed;
+  top: 4px;
+  right: 4px;
+}
+.user-card button {
+  display: block;
+  width: 100%;
+  padding: 0.6em 1.2em;
+  font-size: .7em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+.user-card button:hover {
+  border-color: #646cff;
+}
+.user-card button:focus,
+.user-card button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+.user-greeting img {
+  display: block;
+  width: 50px;
+  height: auto;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
 
 @media (prefers-color-scheme: light) {
   :root {

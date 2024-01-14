@@ -1,4 +1,4 @@
-// path/filename: /client/utils/env.js
+// path/filename: /client/env.js
 
 const env = import.meta.env;
 export default {

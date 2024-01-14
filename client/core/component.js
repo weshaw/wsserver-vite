@@ -7,12 +7,12 @@ function Component(children) {
     this.parent = null;
     this.node = null;
 
-    this.onRender = () => {};
-    this.onMount = () => {};
+    this.onRender = () => { };
+    this.onMount = () => { };
     this.render = () => {
-        if(!this.parent) return;
+        if (!this.parent) return;
         const componentNode = hydrateTemplate(this.template, state);
-        if(this.node && this.parent.contains(this.node)) {
+        if (this.node && this.parent.contains(this.node)) {
             this.parent.replaceChild(componentNode, this.node);
         }
         else {
@@ -20,10 +20,10 @@ function Component(children) {
         }
         this.node = componentNode;
         addSlots();
-        if(!mounted) {
+        if (!mounted) {
+            mounted = true;
             this.onMount(this.node, state);
         }
-        mounted = true;
         this.onRender(this.node, state);
     }
 
@@ -32,14 +32,14 @@ function Component(children) {
         this.render();
     }
     this.appendTo = (parent) => {
-        if(!this.parent) {
+        if (!this.parent) {
             this.setParent(parent);
             return;
         }
         parent.appendChild(this.parent);
     }
 
-    const hydrateTemplate = (template, state={}) => {
+    const hydrateTemplate = (template, state = {}) => {
         const tempNode = document.createElement('div');
         tempNode.innerHTML = template(state);
         return tempNode.firstElementChild;
@@ -50,7 +50,7 @@ function Component(children) {
         slots.forEach(slotNode => {
             const componentName = slotNode.getAttribute('name');
             const component = children && children[componentName];
-            if(!component) {
+            if (!component) {
                 slotNode.remove();
                 return;
             }
@@ -83,7 +83,7 @@ function Component(children) {
     this.getState = () => {
         return state;
     };
-    
+
 }
 
 export default Component;
