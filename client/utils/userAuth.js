@@ -3,9 +3,9 @@
 import { jwtDecode } from "jwt-decode";
 import env from "../env";
 import AppEvent from "../../shared/event";
+import watcher from "../core/watcher";
 
-const { googleClientId } = env
-const google = window.google;
+const { googleClientId } = env;
 
 const authDetailsInitialState = () => ({
   user: null,
@@ -15,7 +15,8 @@ const authDetailsInitialState = () => ({
 function AuthUser() {
   let initialized = false;
   const authChanges = new AppEvent();
-  let authDetails = authDetailsInitialState()
+  const authDetails = watcher(authDetailsInitialState(), authChanges.debouncedNotify);
+  const googleAccount = () => window.google?.accounts?.id;
 
   const credentialResponse = async (response) => {
     if ("credential" in response) {
@@ -31,21 +32,24 @@ function AuthUser() {
 
   const updatAuthDetails = async () => {
     const token = sessionStorage.getItem('googleIdToken') || null;
-    if(!token) {
+    if (!token) {
       signOut();
       return;
     }
     authDetails.token = token;
     authDetails.user = jwtDecode(token);
-    authChanges.notify(authDetails);
+    promptLogin();
   };
 
   const signOut = () => {
     sessionStorage.removeItem('googleIdToken');
-    google.accounts.id.disableAutoSelect();
-    authDetails = authDetailsInitialState();
-    authChanges.notify(authDetails);
-    google.accounts.id.prompt();
+    authDetails.token = null;
+    authDetails.user = null;
+    const ga = googleAccount();
+    if (ga) {
+      ga.disableAutoSelect();
+      ga.prompt();
+    }
   };
 
   const isSignedIn = () => {
@@ -59,19 +63,27 @@ function AuthUser() {
       name: "Guest",
     };
   }
+  const promptLogin = () => {
+    if (!isSignedIn()) {
+      document.cookie = 'g_state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+      googleAccount().prompt();
+    }
+
+  }
 
   const initLogin = () => {
-    if(initialized) {
+    if (!googleAccount()) {
+      setTimeout(() => initLogin(), 100);
       return;
     }
-    initialized = true;
-    google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: authUser.credentialResponse
-    });
-    if(!isSignedIn()) {
-      google.accounts.id.prompt();
+    if (!initialized) {
+      initialized = true;
+      googleAccount().initialize({
+        client_id: googleClientId,
+        callback: authUser.credentialResponse
+      });
     }
+    promptLogin();
   }
   // Initialize auth details
   updatAuthDetails();
@@ -84,6 +96,7 @@ function AuthUser() {
     getUser,
     signOut,
     authChanges,
+    promptLogin,
   }
 }
 

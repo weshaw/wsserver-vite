@@ -1,4 +1,5 @@
 // path/filename: /shared/event.js
+import debounce from './debounce';
 
 // subscribe and unsubscribe from event actions
 function AppEvent() {
@@ -10,7 +11,7 @@ function AppEvent() {
 
     const unsubscribe = (subscriber) => {
         const index = subscribers.indexOf(subscriber);
-        if (index!== -1) {
+        if (index !== -1) {
             subscribers.splice(index, 1);
         }
     }
@@ -21,10 +22,15 @@ function AppEvent() {
         });
     }
 
+    const debouncedNotify = (event, delay = 0) => {
+        debounce(notify, delay)(event);
+    }
+
     return {
         subscribe,
         unsubscribe,
         notify,
+        debouncedNotify,
     }
 }
 

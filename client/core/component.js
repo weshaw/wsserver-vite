@@ -1,4 +1,5 @@
 // path/filename: /client/core/component.js
+import watcher from "./watcher";
 
 function Component(children) {
     let mounted = false;
@@ -62,18 +63,9 @@ function Component(children) {
         });
     }
 
-    const proxyHandler = {
-        set: (target, property, value) => {
-            if (typeof value === 'object' && value !== null) {
-                value = new Proxy(value, proxyHandler);
-            }
-            target[property] = value;
-            if (mounted) this.render();
-            return true;
-        },
-    };
-
-    state = new Proxy({}, proxyHandler);
+    state = watcher({}, () => {
+        if (mounted) this.render();
+    });
 
     this.setState = (newState) => {
         for (const key in newState) {

@@ -24,27 +24,28 @@ export const setupConnection = ({ ws, req, clients }) => {
             }
         });
     };
-
+    const sendError = (message, revieved) => {
+        send('error', { message, revieved });
+        console.log('error', { message, revieved })
+    }
     const processMessage = async (message) => {
         const messageData = parseMessage(message);
-        console.log('Received:', messageData);
         if (!messageData) {
-            send('error', { message: 'Invalid message format'});
+            sendError('Invalid message format', messageData);
             return;
         }
         const {type, data} = messageData;
         if (!clients.has(ws) && type !== `authentication`) {
-            send("error", { message: "Unauthorized" });
+            sendError('Unauthorized', messageData);
         }
         switch (type) {
             case "authentication":
                 const user = await verifyToken(data.token);
                 if (user) {
                     clients.set(ws, { user });
-                    send('authenticated', { message: 'Authentication successful', user });
+                    send('authenticated', { user });
                 } else {
-                    send("error", { message: "Invalid token" });
-                    ws.close(4001, "Invalid token");
+                    sendError('Invalid token', messageData);
                 }
                 break;
             case "logout":
@@ -53,8 +54,7 @@ export const setupConnection = ({ ws, req, clients }) => {
                 break;
             default:
                 const message = `Unknown message type: ${type}`;
-                console.log(message);
-                send('error', { message });
+                sendError(message, messageData);
 
         }
     };

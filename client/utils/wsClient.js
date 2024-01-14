@@ -7,14 +7,9 @@ import {
 const ws = new WebSocket('ws://localhost:8080');
 
 ws.onopen = function () {
-    const token = authUser.getToken();
-    if (token) {
-        sendMessage('authentication', { token });
-    }
-
     authUser.authChanges.subscribe(authDetails => {
         if (authDetails.token) {
-            sendMessage('authentication', { token });
+            sendMessage('authentication', { token: authDetails.token });
         } else {
             sendLogout();
         }
@@ -39,7 +34,7 @@ ws.onerror = function (error) {
     console.error('WebSocket Error:', error);
 };
 ws.onclose = function (e) {
-    authDetails.unsubscribe();
+    authUser.authChanges.unsubscribe();
     console.log('WebSocket Client Disconnected:', e.reason);
 };
 
