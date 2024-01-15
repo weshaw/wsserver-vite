@@ -1,9 +1,10 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 
-export default defineConfig({
-  // other configurations...
 
+export default defineConfig({
+  root: "./client/",
+  envDir: "../",
   define: {
     'process.env': process.env
   }

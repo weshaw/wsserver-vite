@@ -19,13 +19,24 @@ Login.onMount = () => {
 
 Login.onRender = (content, { signedIn }) => {
   if (signedIn) {
-    const logoutButton = content.querySelector('#signOut');
-    logoutButton.addEventListener('click', () => {
-      authUser.signOut()
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userMenuDropdown = document.getElementById('userMenuDropdown');
+    const menuLinks = document.querySelectorAll('#userMenuDropdown a');
+    [...menuLinks].map(link => link.addEventListener('click', (e) => {
+      e.preventDefault();
+      console.dir( e.target)
+      const action = e.target.href.split('#').at(-1);
+      if (action === 'logout') {
+        authUser.signOut();
+      }
+    }));
+    userMenuButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      userMenuDropdown.classList.toggle('hidden');
     });
   } else {
     const promptBox = document.querySelector("#credential_picker_container");
-    if(!promptBox) {
+    if (!promptBox) {
       authUser.promptLogin();
     }
     const loginButton = content.querySelector('#promptLogin');
@@ -44,9 +55,14 @@ authUser.authChanges.subscribe(() => {
 Login.template = ({ user, signedIn, googleClientId }) => {
   if (signedIn) {
     return `
-    <div class="user-card">
-      <div class="user-greeting">${user?.picture && `<img src="${user.picture}" />`} ${user.given_name}</div>
-      <button id="signOut">Sign Out</button>
+    <div class="app-menu-container inner-container flex items-center">
+      <button id="userMenuButton" class="flex items-center focus:outline-none">
+          ${user?.picture && `<img src="${user.picture}" class="h-8 w-8 rounded-full mr-2" />`}
+          <span class="text-white">${user.given_name}</span>
+      </button>
+      <div id="userMenuDropdown" class="app-menu menu-right bg-slate-700 rounded-lg shadow-xl hidden">
+        <a href="#logout" class=" hover:bg-slate-600 rounded-lg">Logout</a>
+      </div>
     </div>
     `
   }
@@ -67,7 +83,7 @@ Login.template = ({ user, signedIn, googleClientId }) => {
   // <div class="g_id_signin"
   //   data-type="standard"
   //   data-shape="pill"
-  //   data-theme="filled_black"
+  //   data-theme="transparent"
   //   data-text="continue_with"
   //   data-size="large"
   //   data-logo_alignment="left">

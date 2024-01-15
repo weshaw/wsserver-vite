@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Web App</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body class="bg-slate-900">
+    <!-- Title Bar -->
+    <nav class="top-bar fixed top-0 w-full bg-slate-950 p-2">
+      <div class="flex justify-between">
+        <h1 class="app-title">App Name</h1>
+        <div id="user-panel" class="user-card flex items-center"></div>
+      </div>
+    </nav>
+
+    <!-- Canvas Element -->
+    <canvas id="appCanvas" class="w-full h-full"></canvas>
+
+    <!-- Footer Bar -->
+    <footer class="bottom-bar fixed bottom-0 w-full bg-slate-950 p-4">
+      <p>Footer Content</p>
+    </footer>
+
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

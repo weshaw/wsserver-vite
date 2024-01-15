@@ -1,8 +1,10 @@
 // path/filename: /client/main.js
 
-import './style.css'
+import './css/index.css';
 
 import ws from './utils/wsClient.js'
-import App from './components/App.js'
+import Login from './components/Login.js'
+import env from './env.js';
 
-App.appendTo(document.querySelector('#app'));
+console.log(env);
+Login.appendTo(document.querySelector('#user-panel'));

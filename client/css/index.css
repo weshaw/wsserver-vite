@@ -1,0 +1,44 @@
+@import url("tailwind.css");
+@import url("default.css");
+
+body{
+    overflow: hidden;
+}
+
+.top-bar, .bottom-bar {
+    color: #fff;
+}
+
+.app-title {
+    line-height: 66px;
+    font-size: 1.2rem;
+    padding-left: 1rem;
+}
+
+.app-menu-container{
+    position: relative;
+}
+.app-menu-container > button{
+    min-width: 10rem;
+    margin: 0;
+    padding: 0.5rem;
+}
+.app-menu{
+    position: absolute;
+    top: 110%;
+    overflow: hidden;
+    border-radius: 8px;
+}
+.app-menu.menu-right {
+    right: 0;
+}
+.app-menu.menu-left {
+    left: 0;
+}
+.app-menu a{
+    min-width: 10rem;
+    padding: .5rem 1rem;
+    margin:0;
+    display:block;
+    text-align:left;
+}

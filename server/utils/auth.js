@@ -11,6 +11,10 @@ if (!CLIENT_ID) {
 const client = new OAuth2Client(CLIENT_ID);
 
 export async function verifyToken(token) {
+  if(!token) {
+    console.error('Token verification error:', "token is missing");
+    return null;
+}
     try {
         const ticket = await client.verifyIdToken({
             idToken: token,
